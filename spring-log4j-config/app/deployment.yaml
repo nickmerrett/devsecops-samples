@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app: spring-log4j
+    app.kubernetes.io/component: web
+    app.kubernetes.io/instance: spring-log4j
+    app.kubernetes.io/name: spring-log4j
+    app.kubernetes.io/part-of: spring-log4j
+    app.openshift.io/runtime: java
+  name: spring-log4j
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-log4j
+  template:
+    metadata:
+      labels:
+        app: spring-log4j
+    spec:
+      containers:
+      - name: spring-log4j
+        imagePullPolicy: Always
+        image: registry-1.docker.io/egrol/spring-boot-log4j-vulnerable:0.1 
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+            httpHeaders:
+            - name: X-Api-Version
+              value: "1"
+          initialDelaySeconds: 45
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 8080
+          protocol: TCP
+        - containerPort: 8443
+          protocol: TCP
+        - containerPort: 8778
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8080
+            scheme: HTTP
+            httpHeaders:
+            - name: X-Api-Version
+              value: "1"
+          initialDelaySeconds: 45
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5

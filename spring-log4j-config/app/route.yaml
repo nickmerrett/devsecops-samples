@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: spring-log4j
+  name: spring-log4j
+spec:
+  port:
+    targetPort: 8080-tcp
+  to:
+    kind: Service
+    name: spring-log4j
+    weight: 100
